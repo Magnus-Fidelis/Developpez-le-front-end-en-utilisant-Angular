@@ -3,6 +3,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { ChartData } from 'chart.js';
+import { Participation } from 'src/app/core/models/Participation';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -30,7 +31,7 @@ export class HomeComponent implements OnInit {
     labels: ['Red', 'Blue', 'Yellow'],
     datasets: [
       {
-        label: 'My First Dataset',
+        label: 'Medaille',
         data: [300, 50, 100],
         backgroundColor: [
           'rgb(255, 99, 132)',
@@ -47,8 +48,25 @@ export class HomeComponent implements OnInit {
     this.olympics$ = this.olympicService.getOlympics();
     this.sub = this.olympics$.subscribe((data: Array<Olympic> | null) => {
       if (data) {
+        this.data.labels = [];
+        this.data.datasets[0].data = [];
+
+        for (let i = 0; i < data.length; i++) {
+          const element: Olympic = data[i];
+
+          this.data.labels?.push(element.country);
+          this.data.datasets[0].data.push(this.totalMedal(element));
+        }
       }
     });
+  }
+
+  totalMedal(country: Olympic): number {
+    let totalMedal = 0;
+    country.participations?.forEach((p: Participation) => {
+      if (p.medalsCount) totalMedal += p.medalsCount;
+    });
+    return totalMedal;
   }
 
   ngOnDestroy(): void {
