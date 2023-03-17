@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription, of } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { ChartData } from 'chart.js';
 import { Participation } from 'src/app/core/models/Participation';
+import { BaseChartDirective } from 'ng2-charts';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -11,6 +12,8 @@ import { Participation } from 'src/app/core/models/Participation';
 })
 export class HomeComponent implements OnInit {
   public olympics$: Observable<Array<Olympic> | null> = of(null);
+  @ViewChild(BaseChartDirective)
+  public chart: BaseChartDirective | undefined;
   barChartData: {
     data: Array<Number>;
   } = {
@@ -57,6 +60,7 @@ export class HomeComponent implements OnInit {
           this.data.labels?.push(element.country);
           this.data.datasets[0].data.push(this.totalMedal(element));
         }
+        this.chart?.chart?.update();
       }
     });
   }
