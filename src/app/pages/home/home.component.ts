@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { ChartData } from 'chart.js';
@@ -42,12 +42,16 @@ export class HomeComponent implements OnInit {
     ],
   };
   constructor(private olympicService: OlympicService) {}
-
+  sub!: Subscription;
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
-    this.olympics$.subscribe((data: Array<Olympic> | null) => {
+    this.sub = this.olympics$.subscribe((data: Array<Olympic> | null) => {
       if (data) {
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }
