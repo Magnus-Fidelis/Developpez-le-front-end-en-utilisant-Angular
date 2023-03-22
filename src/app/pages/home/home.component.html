@@ -1,5 +1,22 @@
-<h2>Olympic games app</h2>
-<hr />
-<p>{{ (olympics$ | async)?.length }} data loaded</p>
+<div class="center" *ngIf="chartDataDoughnut">
+  <h2 id="title">Medals per country</h2>
+  <div id="details">
+    <div class="darkGreenBorder center right">
+      <p>Number of JOs</p>
+      <p>{{ JO }}</p>
+    </div>
+    <div class="darkGreenBorder center left">
+      <p>Number of countries</p>
+      <p>{{ chartDataDoughnut.labels.length }}</p>
+    </div>
+  </div>
 
-<canvas baseChart [data]="data" [type]="'pie'"> </canvas>
+  <canvas
+    baseChart
+    [data]="chartDataDoughnut"
+    [type]="'pie'"
+    id="canvas"
+    [options]="options"
+    [plugins]="doughnutLabelsLinePlugins"
+  ></canvas>
+</div>
